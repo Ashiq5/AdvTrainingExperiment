@@ -19,7 +19,7 @@ def _generate_adversarial_examples(model, args, dataset):
     results_iterable = attack.attack_dataset(dataset)
     num_successes = 0
 
-    for num_successes in tqdm(args.adversarial_samples_to_train):
+    for num_successes in tqdm(range(args.adversarial_samples_to_train)):
         try:
             result = next(results_iterable)
             if isinstance(result, SuccessfulAttackResult):
