@@ -26,8 +26,6 @@ def _generate_adversarial_examples(model, args, dataset):
                 adv_train_text.append(result.perturbed_text())
                 ground_truth_labels.append(result.original_result.ground_truth_output)
                 num_successes += 1
-                if num_successes % 50 == 0:
-                    print(str(num_successes) + " of ", str(args.adversarial_samples_to_train) + " successes complete")
         except StopIteration:
             break
 

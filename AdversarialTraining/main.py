@@ -3,8 +3,12 @@ from prepare_dataset import return_dataset, prepare_dataset_for_training
 from model import lstm_model
 from prepare_dataloader import _make_dataloader
 from training import train
+from evaluate import evaluate
+from attack import attack
 import torch
 import datetime
+from textattack.models.wrappers import PyTorchModelWrapper
+
 
 if __name__ == "__main__":
     # create args
@@ -35,9 +39,20 @@ if __name__ == "__main__":
         tokenizer, test_text, test_labels, args.batch_size
     )
 
+    # training the model
     trained_model = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader, test_dataloader],
                           pre_dataset=(train_text, train_labels))
 
+    # saving the model
     output_dir = "models/"
     model_name = "lstm-at-bae-kaggle-toxic-comment-" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
+    model_path = output_dir + model_name + ".pt"
     torch.save(trained_model.state_dict(), output_dir + model_name + ".pt")
+    model_wrapper = PyTorchModelWrapper(trained_model, tokenizer)
+
+    # reloading it from disk for evaluation
+    model.load_state_dict(torch.load(model_path))
+    evaluate(model, test_dataloader)
+
+    # now, test the success rate of attack_class_for_testing on this adv. trained model
+    attack(model_wrapper, args, list(zip(test_text, test_labels)))
