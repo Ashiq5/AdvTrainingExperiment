@@ -1,6 +1,5 @@
 from textattack.attack_results import SuccessfulAttackResult
 import textattack
-from textattack.attack_recipes import TextFoolerJin2019, BAEGarg2019, TextBuggerLi2018
 
 
 def _generate_adversarial_examples(model, args, dataset):
