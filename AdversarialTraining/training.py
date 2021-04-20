@@ -62,4 +62,4 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
                 args.batch_size
             )
 
-
+    return model_wrapper.model
