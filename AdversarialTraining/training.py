@@ -1,5 +1,4 @@
 import torch
-from AdversarialTraining import main
 from generate_adversarial_samples import _generate_adversarial_examples
 from prepare_dataloader import _make_dataloader
 
