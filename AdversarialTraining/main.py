@@ -1,4 +1,4 @@
-from AdversarialTraining.args import Args
+from args import Args
 from prepare_dataset import return_dataset, prepare_dataset_for_training
 from model import lstm_model
 from prepare_dataloader import _make_dataloader

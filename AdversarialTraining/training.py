@@ -1,8 +1,9 @@
 import torch
-from main import device
+from AdversarialTraining import main
 from generate_adversarial_samples import _generate_adversarial_examples
 from prepare_dataloader import _make_dataloader
 
+device = main.device
 
 def need_grad(x):
     return x.requires_grad
