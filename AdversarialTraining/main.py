@@ -3,7 +3,8 @@ from prepare_dataset import return_dataset, prepare_dataset_for_training
 from model import lstm_model
 from prepare_dataloader import _make_dataloader
 from training import train
-
+import torch
+import datetime
 
 if __name__ == "__main__":
     # create args
@@ -36,6 +37,9 @@ if __name__ == "__main__":
 
     train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader, test_dataloader],
           pre_dataset=(train_text, train_labels))
+
+    model_name = "lstm-at-bae-kaggle-toxic-comment-" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
+    torch.save(model.state_dict(), model_name + ".pt")
 
 
 
