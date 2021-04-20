@@ -38,5 +38,6 @@ if __name__ == "__main__":
     trained_model = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader, test_dataloader],
                           pre_dataset=(train_text, train_labels))
 
+    output_dir = "models/"
     model_name = "lstm-at-bae-kaggle-toxic-comment-" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
-    torch.save(trained_model.state_dict(), model_name + ".pt")
+    torch.save(trained_model.state_dict(), output_dir + model_name + ".pt")
