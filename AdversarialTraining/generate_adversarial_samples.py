@@ -1,6 +1,8 @@
 from textattack.attack_results import SuccessfulAttackResult
 import textattack
 from tqdm import tqdm
+from textattack.attack_recipes import TextFoolerJin2019, BAEGarg2019, TextBuggerLi2018
+
 
 def _generate_adversarial_examples(model, args, dataset):
     """Create a dataset of adversarial examples based on perturbations of the
