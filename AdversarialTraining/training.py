@@ -1,6 +1,10 @@
 import torch
 from generate_adversarial_samples import _generate_adversarial_examples
 from prepare_dataloader import _make_dataloader
+from textattack.attack_recipes.textfooler_jin_2019 import TextFoolerJin2019
+from textattack.attack_recipes.textbugger_li_2018 import TextBuggerLi2018
+from textattack.attack_recipes.bae_garg_2019 import BAEGarg2019
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
