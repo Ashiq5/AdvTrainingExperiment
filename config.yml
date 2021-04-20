@@ -3,7 +3,7 @@ Path:
   kaggle-toxic-comment-directory: "/Users/ashiq/Documents/VTech/Security Analytics/Project5984/dataset/"
   kaggle-toxic-comment:
     train: "dataset/train-short.csv"
-    test: "test-short.csv"
+    test: "dataset/test-short.csv"
   OutputFileName:
     train: 'train.csv'
     test: 'test.csv'
