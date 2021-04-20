@@ -3,7 +3,7 @@ from AdversarialTraining import main
 from generate_adversarial_samples import _generate_adversarial_examples
 from prepare_dataloader import _make_dataloader
 
-device = main.device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def need_grad(x):

@@ -3,9 +3,7 @@ from prepare_dataset import return_dataset, prepare_dataset_for_training
 from model import lstm_model
 from prepare_dataloader import _make_dataloader
 from training import train
-import torch
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == "__main__":
     # create args
