@@ -49,10 +49,10 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
 
     for epoch_no in range(0, epochs):
         train_acc, train_loss = epoch(train_dataloader, model_wrapper.model, loss_function, optimizer)
-        print("Epoch:", epoch, "Loss: ", train_loss, "Train Acc: ", train_acc * 100, "%")
+        print("Epoch:", epoch_no, "Loss: ", train_loss, "Train Acc: ", train_acc * 100, "%")
 
         if epoch_no % args.attack_period == 0:
-            print("Generating adversarial samples at epoch ", epoch)
+            print("Generating adversarial samples at epoch ", epoch_no)
             adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                                  args,
                                                                                  list(zip(pre_dataset[0], pre_dataset[1])))
