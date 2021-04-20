@@ -16,8 +16,6 @@ if __name__ == "__main__":
 
     # prepare dataset
     train_dataset, validation_dataset, test_dataset = return_dataset()
-    print(train_dataset, validation_dataset, test_dataset)
-    exit()
     train_text, train_labels = prepare_dataset_for_training(train_dataset)
     eval_text, eval_labels = prepare_dataset_for_training(validation_dataset)
     test_text, test_labels = prepare_dataset_for_training(test_dataset)
