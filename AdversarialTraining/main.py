@@ -13,6 +13,8 @@ from textattack.models.wrappers import PyTorchModelWrapper
 if __name__ == "__main__":
     # create args
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
+    # You just need to change in the next two lines
+    model_short_name = "lstm"
     args = Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[0],
                 dataset="kaggle-toxic-comment", batch_size=32, epochs=100,
                 adversarial_samples_to_train=500, attack_period=50)
@@ -24,7 +26,10 @@ if __name__ == "__main__":
     test_text, test_labels = prepare_dataset_for_training(test_dataset)
 
     # define model and tokenizer
-    model_wrapper = lstm_model(args)
+    if model_short_name == "lstm":
+        model_wrapper = lstm_model(args)
+    else:
+        model_wrapper = cnn_model(args)
     model = model_wrapper.model
     tokenizer = model_wrapper.tokenizer
 
