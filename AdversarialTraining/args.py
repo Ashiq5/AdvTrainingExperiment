@@ -3,7 +3,9 @@ class Args:
                  dataset="imdb", model="lstm", data_files=None, type_of_file="csv",
                  epochs=50, allowed_labels=None, batch_size=64, max_length=512,
                  learning_rate=2e-5, output_dir=None, num_labels=2,
-                 adversarial_samples_to_train=500, attack_period=50, num_attack_samples=500):
+                 adversarial_samples_to_train=500, attack_period=50, num_attack_samples=500,
+                 model_short_name="lstm",
+                 at_model_prefix=None, orig_model_prefix=None):
         self.attack_class_for_training = attack_class_for_training
         self.attack_class_for_testing = attack_class_for_testing
         self.dataset = dataset
@@ -21,3 +23,6 @@ class Args:
         self.adversarial_samples_to_train = adversarial_samples_to_train
         self.attack_period = attack_period
         self.num_attack_samples = num_attack_samples
+        self.model_short_name = model_short_name
+        self.at_model_prefix = at_model_prefix
+        self.orig_model_prefix = orig_model_prefix

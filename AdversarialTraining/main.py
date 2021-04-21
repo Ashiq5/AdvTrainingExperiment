@@ -10,6 +10,9 @@ import torch
 import datetime
 from textattack.models.wrappers import PyTorchModelWrapper
 
+import config_with_yaml as config
+cfg = config.load("../config.yml")
+
 
 def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_prefix=None):
     if not adversarial_training:
@@ -37,6 +40,7 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
 
 def save_in_csv(fn, adv_text, labels):
     import csv
+    path = cfg.getProperty('Path.adv_sample_path')
     with open('dataset/' + fn, mode='w') as csv_file:
         employee_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         employee_writer.writerow(['Adversarial Text', 'Ground Truth Output'])
@@ -48,11 +52,12 @@ def save_in_csv(fn, adv_text, labels):
 if __name__ == "__main__":
     # create args
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
-    # You just need to change in the next two lines
-    model_short_name = "lstm"
+    # You just need to change the parameters here
     args = Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[0],
                 dataset="kaggle-toxic-comment", batch_size=32, epochs=100,
-                adversarial_samples_to_train=2000, attack_period=50, num_attack_samples=50)
+                adversarial_samples_to_train=2000, attack_period=50, num_attack_samples=50,
+                model_short_name="lstm", at_model_prefix="lstm-at-bae-kaggle-toxic-comment-",
+                orig_model_prefix="lstm-kaggle-toxic-comment-")
 
     # prepare dataset
     train_dataset, validation_dataset, test_dataset = return_dataset()
@@ -61,7 +66,7 @@ if __name__ == "__main__":
     test_text, test_labels = prepare_dataset_for_training(test_dataset)
 
     # define model and tokenizer
-    if model_short_name == "lstm":
+    if args.model_short_name == "lstm":
         model_wrapper = lstm_model(args)
     else:
         model_wrapper = cnn_model(args)
@@ -87,10 +92,10 @@ if __name__ == "__main__":
     )
 
     # adversarial
-    at_performance = train_evaluate_attack(model_wrapper, model_name_prefix="lstm-at-bae-kaggle-toxic-comment-")
+    at_performance = train_evaluate_attack(model_wrapper, model_name_prefix=args.at_model_prefix)
 
     # now do non-adversarially to compare with the old attack performance
-    non_at_performance = train_evaluate_attack(model_wrapper, model_name_prefix="lstm-kaggle-toxic-comment-",
+    non_at_performance = train_evaluate_attack(model_wrapper, model_name_prefix=args.orig_model_prefix,
                                                adversarial_training=False)
 
     print(at_performance)
