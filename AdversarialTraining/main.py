@@ -41,7 +41,7 @@ if __name__ == "__main__":
     model_short_name = "lstm"
     args = Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[0],
                 dataset="kaggle-toxic-comment", batch_size=32, epochs=100,
-                adversarial_samples_to_train=500, attack_period=50, num_attack_samples=500)
+                adversarial_samples_to_train=50, attack_period=50, num_attack_samples=50)
 
     # prepare dataset
     train_dataset, validation_dataset, test_dataset = return_dataset()
