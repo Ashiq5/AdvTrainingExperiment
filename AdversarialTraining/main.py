@@ -5,6 +5,7 @@ from prepare_dataloader import _make_dataloader
 from training import train
 from evaluate import evaluate
 from attack import attack
+from generate_adversarial_samples import _generate_adversarial_examples
 import torch
 import datetime
 from textattack.models.wrappers import PyTorchModelWrapper
@@ -34,14 +35,24 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
     return performance
 
 
-if __name__ == "__main__":
+def save_in_csv(fn, adv_text, labels):
+    import csv
+    with open('dataset/' + fn, mode='w') as csv_file:
+        employee_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        employee_writer.writerow(['Adversarial Text', 'Ground Truth Output'])
+
+        for idx, text in enumerate(adv_text):
+            employee_writer.writerow([adv_text[idx], labels[idx]])
+
+
+if __name__ == "__smain__":
     # create args
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
     # You just need to change in the next two lines
     model_short_name = "lstm"
     args = Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[0],
                 dataset="kaggle-toxic-comment", batch_size=32, epochs=100,
-                adversarial_samples_to_train=100, attack_period=50, num_attack_samples=50)
+                adversarial_samples_to_train=2000, attack_period=50, num_attack_samples=50)
 
     # prepare dataset
     train_dataset, validation_dataset, test_dataset = return_dataset()
@@ -56,6 +67,13 @@ if __name__ == "__main__":
         model_wrapper = cnn_model(args)
     model = model_wrapper.model
     tokenizer = model_wrapper.tokenizer
+
+    # pre-generate and save adversarial samples in a csv
+    adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
+                                                                         args,
+                                                                         list(zip(train_text, train_labels)))
+    save_in_csv("lstm-kaggle-bae.csv", adv_train_text, ground_truth_labels)
+    exit()
 
     # prepare dataloader
     train_dataloader = _make_dataloader(
