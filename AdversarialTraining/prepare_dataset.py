@@ -1,5 +1,7 @@
 from datasets import load_dataset
-from main import cfg
+
+import config_with_yaml as config
+cfg = config.load("../config.yml")
 
 
 def prepare_dataset_for_training(datasets_dataset):
