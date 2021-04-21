@@ -72,7 +72,7 @@ if __name__ == "__main__":
     adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                          args,
                                                                          list(zip(train_text, train_labels)))
-    save_in_csv("lstm-kaggle-bae.csv", adv_train_text, ground_truth_labels)
+    save_in_csv("lstm-kaggle-bae.csv", adv_train_text, ground_truth_labels)  # change this name b4 running
     exit()
 
     # prepare dataloader
