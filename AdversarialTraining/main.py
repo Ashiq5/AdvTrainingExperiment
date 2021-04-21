@@ -45,7 +45,7 @@ def save_in_csv(fn, adv_text, labels):
             employee_writer.writerow([adv_text[idx], labels[idx]])
 
 
-if __name__ == "__smain__":
+if __name__ == "__main__":
     # create args
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
     # You just need to change in the next two lines
