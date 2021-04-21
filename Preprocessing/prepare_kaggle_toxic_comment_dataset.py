@@ -22,7 +22,7 @@ def prepare_training_file():
                 label = 0
                 for i in row[2:8]:
                     label = int(i) or label
-                if label_count[label] > 15000:  # total 30000 rows with each label having 15000 each
+                if label_count[label] > 1500:  # total 30000 rows with each label having 15000 each
                     continue
                 label_count[label] += 1
                 dataset.append((row[1], label))
@@ -71,7 +71,7 @@ def prepare_test_file():
             else:
                 label = labels.get(row[0])
                 if label != -1:
-                    if label_count[label] > 5000:  # total 10000 rows with each label having 5000 each
+                    if label_count[label] > 500:  # total 10000 rows with each label having 5000 each
                         continue
                     label_count[label] += 1
                     dataset.append((row[1], labels[row[0]]))

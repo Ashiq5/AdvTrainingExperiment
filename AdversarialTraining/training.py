@@ -51,7 +51,7 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
         train_acc, train_loss = epoch(train_dataloader, model_wrapper.model, loss_function, optimizer)
         print("Epoch:", epoch_no, "Loss: ", train_loss, "Train Acc: ", train_acc * 100, "%")
 
-        if epoch_no % args.attack_period == 0:
+        if args.attack_class_for_training and epoch_no % args.attack_period == 0:
             print("Generating adversarial samples at epoch ", epoch_no)
             adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                                  args,
@@ -61,5 +61,5 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
                 model_wrapper.tokenizer, adv_train_text + pre_dataset[0], ground_truth_labels + pre_dataset[1],
                 args.batch_size
             )
-
+    print("Training finished.")
     return model_wrapper.model

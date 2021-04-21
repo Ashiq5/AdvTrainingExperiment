@@ -1,6 +1,6 @@
 from args import Args
 from prepare_dataset import return_dataset, prepare_dataset_for_training
-from model import lstm_model
+from model import lstm_model, cnn_model
 from prepare_dataloader import _make_dataloader
 from training import train
 from evaluate import evaluate
@@ -8,6 +8,30 @@ from attack import attack
 import torch
 import datetime
 from textattack.models.wrappers import PyTorchModelWrapper
+
+
+def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_prefix=None):
+    if not adversarial_training:
+        args.attack_class_for_training = None
+
+    # training the model
+    trained_model = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader],
+                          pre_dataset=(train_text, train_labels))
+
+    # saving the model
+    output_dir = "models/"
+    model_name = model_name_prefix + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
+    model_path = output_dir + model_name + ".pt"
+    torch.save(trained_model.state_dict(), model_path)
+    model_wrapper = PyTorchModelWrapper(trained_model, tokenizer)
+
+    # reloading it from disk for evaluation
+    model.load_state_dict(torch.load(model_path))
+    evaluate(model, test_dataloader)
+
+    # now, test the success rate of attack_class_for_testing on this adv. trained model
+    performance = attack(model_wrapper, args, list(zip(test_text, test_labels)))
+    return performance
 
 
 if __name__ == "__main__":
@@ -44,20 +68,12 @@ if __name__ == "__main__":
         tokenizer, test_text, test_labels, args.batch_size
     )
 
-    # training the model
-    trained_model = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader, test_dataloader],
-                          pre_dataset=(train_text, train_labels))
+    # adversarial
+    at_performance = train_evaluate_attack(model_wrapper, model_name_prefix="lstm-at-bae-kaggle-toxic-comment-")
 
-    # saving the model
-    output_dir = "models/"
-    model_name = "lstm-at-bae-kaggle-toxic-comment-" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
-    model_path = output_dir + model_name + ".pt"
-    torch.save(trained_model.state_dict(), output_dir + model_name + ".pt")
-    model_wrapper = PyTorchModelWrapper(trained_model, tokenizer)
+    # now do non-adversarially to compare with the old attack performance
+    non_at_performance = train_evaluate_attack(model_wrapper, model_name_prefix="lstm-kaggle-toxic-comment-",
+                                               adversarial_training=False)
 
-    # reloading it from disk for evaluation
-    model.load_state_dict(torch.load(model_path))
-    evaluate(model, test_dataloader)
-
-    # now, test the success rate of attack_class_for_testing on this adv. trained model
-    attack(model_wrapper, args, list(zip(test_text, test_labels)))
+    print(at_performance)
+    print(non_at_performance)

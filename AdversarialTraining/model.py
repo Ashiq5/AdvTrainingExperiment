@@ -22,5 +22,5 @@ def cnn_model(args):
     return model_wrapper
 
 
-def bert_model():
+def bert_model(args):
     pass

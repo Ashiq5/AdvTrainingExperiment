@@ -95,7 +95,7 @@ def log_summary(results):
     avg_num_queries = str(round(avg_num_queries, 2))
     summary_table_rows.append(["Avg num queries:", avg_num_queries])
 
-    print(summary_table_rows)
+    return summary_table_rows
 
 
 def attack(model, args, dataset):
@@ -113,7 +113,8 @@ def attack(model, args, dataset):
     results = []
     num_attacks = 0
     for result in results_iterable:
+        print(num_attacks, " attack tried")
         if num_attacks > args.num_attack_samples:
             break
         results.append(result)
-    log_summary(results)
+    return log_summary(results)
