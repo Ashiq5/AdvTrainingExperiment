@@ -21,9 +21,9 @@ def _generate_adversarial_examples(model, args, dataset):
     for result in tqdm(
             attack.attack_dataset(dataset), desc="Attack", total=len(dataset)
     ):
-        adv_train_text.append(result.perturbed_text())
-        ground_truth_labels.append(result.original_result.ground_truth_output)
         if isinstance(result, SuccessfulAttackResult):
+            adv_train_text.append(result.perturbed_text())
+            ground_truth_labels.append(result.original_result.ground_truth_output)
             num_successes += 1
         if num_successes >= args.adversarial_samples_to_train:
             break
