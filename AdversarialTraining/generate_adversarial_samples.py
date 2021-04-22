@@ -16,17 +16,16 @@ def _generate_adversarial_examples(model, args, dataset):
     """
     attack = eval(args.attack_class_for_training).build(model)
     adv_train_text, ground_truth_labels = [], []
-    results_iterable = attack.attack_dataset(dataset)
     num_successes = 0
 
-    for num_successes in tqdm(range(args.adversarial_samples_to_train)):
-        try:
-            result = next(results_iterable)
-            if isinstance(result, SuccessfulAttackResult):
-                adv_train_text.append(result.perturbed_text())
-                ground_truth_labels.append(result.original_result.ground_truth_output)
-                num_successes += 1
-        except StopIteration:
+    for result in tqdm(
+            attack.attack_dataset(dataset), desc="Attack", total=len(dataset)
+    ):
+        adv_train_text.append(result.perturbed_text())
+        ground_truth_labels.append(result.original_result.ground_truth_output)
+        if isinstance(result, SuccessfulAttackResult):
+            num_successes += 1
+        if num_successes >= args.adversarial_samples_to_train:
             break
 
     return adv_train_text, ground_truth_labels

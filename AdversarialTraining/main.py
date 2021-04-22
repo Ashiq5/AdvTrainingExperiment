@@ -41,23 +41,23 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
     return train_losses, performance
 
 
-def save_samples_in_csv(fn, adv_text, labels):
+def save_samples_in_csv(fn):
     with open('adv_samples/' + fn, mode='w') as csv_file:
-        employee_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        employee_writer.writerow(['Adversarial Text', 'Ground Truth Output'])
+        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerow(['Adversarial Text', 'Ground Truth Output'])
 
-        for idx, text in enumerate(adv_text):
-            employee_writer.writerow([adv_text[idx], labels[idx]])
+        for idx, text in enumerate(adv_train_text):
+            csv_writer.writerow([text, ground_truth_labels[idx]])
 
 
 def save_result_in_csv(fn, details):
     with open('result/' + fn, mode='w') as csv_file:
-        employee_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        employee_writer.writerow(['Original Text', 'Perturbed Text', 'Attack Output',
+        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerow(['Original Text', 'Perturbed Text', 'Attack Output',
                                   'Original Output', 'Ground Truth Output', 'Result'])
 
         for detail in details:
-            employee_writer.writerow(detail)
+            csv_writer.writerow(detail)
 
 
 if __name__ == "__main__":
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                          args,
                                                                          list(zip(train_text, train_labels)))
-    save_samples_in_csv(args.adv_sample_file, adv_train_text, ground_truth_labels)
+    save_samples_in_csv(args.adv_sample_file)
     exit()
 
     # prepare dataloader
