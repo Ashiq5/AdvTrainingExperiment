@@ -1,4 +1,4 @@
-from textattack.attack_results import SuccessfulAttackResult
+from textattack.attack_results import SuccessfulAttackResult, SkippedAttackResult
 import textattack
 from tqdm import tqdm
 from textattack.attack_recipes import TextFoolerJin2019, BAEGarg2019, TextBuggerLi2018
@@ -30,6 +30,12 @@ def _generate_adversarial_examples(model, args, dataset, save=False):
             csv_writer.writerow([result.perturbed_text(), result.original_result.ground_truth_output])
             num_successes += 1
             print(num_successes, " attack succeeded")
+        if isinstance(result, SkippedAttackResult):
+            adv_train_text.append(result.perturbed_text())
+            ground_truth_labels.append(result.original_result.ground_truth_output)
+            csv_writer.writerow([result.perturbed_text(), result.original_result.ground_truth_output])
+            num_successes += 1
+            print(num_successes, " attack skipped")
         if num_successes >= args.adversarial_samples_to_train:
             break
 
