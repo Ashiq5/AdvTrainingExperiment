@@ -18,7 +18,8 @@ def _generate_adversarial_examples(model, args, dataset):
     adv_train_text, ground_truth_labels = [], []
     num_successes = 0
 
-    for result in attack.attack_dataset(dataset):
+    for idx, result in enumerate(attack.attack_dataset(dataset)):
+        print(idx, " no. attack tried")
         if isinstance(result, SuccessfulAttackResult):
             adv_train_text.append(result.perturbed_text())
             ground_truth_labels.append(result.original_result.ground_truth_output)
