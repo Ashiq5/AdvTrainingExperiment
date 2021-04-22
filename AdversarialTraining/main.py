@@ -58,7 +58,7 @@ def save_result_in_csv(fn, details):
             csv_writer.writerow(detail)
 
 
-def get_args_for_model():
+def get_args():
     # create args
     # You just need to change the parameters here
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
@@ -68,25 +68,25 @@ def get_args_for_model():
                     model_short_name="lstm", num_attack_samples=500,
                     adversarial_samples_to_train=2000,
                     orig_model_prefix="lstm-kaggle-toxic-comment-", attack_class_for_training=attack_classes[2],
-                    adv_sample_file="lstm-kaggle-textbugger.csv", adversarial_training=False, model_path=None)
+                    adv_sample_file="lstm-kaggle-textbugger.csv", adversarial_training=False)
     else:
         return Args(attack_class_for_training=attack_classes[2], attack_class_for_testing=attack_classes[2],
                     dataset="kaggle-toxic-comment", batch_size=32, epochs=75,
                     num_attack_samples=500,
                     model_short_name="lstm", at_model_prefix="lstm-at-textbugger-kaggle-toxic-comment-",
-                    adv_sample_file="lstm-kaggle-bae.csv", adversarial_training=True)
+                    adv_sample_file="lstm-kaggle-textbugger.csv", adversarial_training=True)
 
 
-def load_model_from_disk(arg):
-    model.load_state_dict(torch.load(arg.model_path))
-    model_wrapper = PyTorchModelWrapper(model, model.tokenizer)
+def load_model_from_disk():
+    model.load_state_dict(torch.load(""))  # provide file name here
+    model_wrapper = PyTorchModelWrapper(model, tokenizer)
     print(evaluate(model_wrapper.model, test_dataloader))  # for checking whether loading is correct
     return model_wrapper
 
 
 if __name__ == "__main__":
     load_from_disk = True  # change this
-    args = get_args_for_model()
+    args = get_args()
 
     # define model and tokenizer
     if args.model_short_name == "lstm":
@@ -118,8 +118,10 @@ if __name__ == "__main__":
             tokenizer, train_text + adv_train_text, train_labels + ground_truth_labels, args.batch_size
         )
 
-    # now train
-    if not load_from_disk:
+    # either load_from_disk or train
+    if load_from_disk:
+        model_wrapper = load_model_from_disk()
+    else:
         train_losses, test_accuracy, performance = train_evaluate_attack(model_wrapper,
                                                                          model_name_prefix=args.orig_model_prefix,
                                                                          adversarial_training=args.adversarial_training)
@@ -140,7 +142,6 @@ if __name__ == "__main__":
         save_result_in_csv(args.orig_model_prefix + '-details.csv', performance[1])
 
     # pre-generate and save adversarial samples in a csv
-    model_wrapper = load_model_from_disk(args)
     adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                          args,
                                                                          list(zip(train_text, train_labels)),
