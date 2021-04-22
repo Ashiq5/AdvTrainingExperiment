@@ -88,10 +88,10 @@ if __name__ == "__main__":
     tokenizer = model_wrapper.tokenizer
 
     # prepare dataloader
-    if args.adversarial_training:
-        adv_train_dataloader = _make_dataloader(
-            tokenizer, train_text + adv_train_text, train_labels + ground_truth_labels, args.batch_size
-        )
+    # if args.adversarial_training:
+    #     adv_train_dataloader = _make_dataloader(
+    #         tokenizer, train_text + adv_train_text, train_labels + ground_truth_labels, args.batch_size
+    #     )
     train_dataloader = _make_dataloader(
         tokenizer, train_text, train_labels, args.batch_size
     )
