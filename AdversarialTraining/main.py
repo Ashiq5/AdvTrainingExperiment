@@ -66,9 +66,10 @@ if __name__ == "__main__":
     # You just need to change the parameters here
     args = Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[0],
                 dataset="kaggle-toxic-comment", batch_size=32, epochs=100,
-                adversarial_samples_to_train=2000, attack_period=50, num_attack_samples=50,
+                adversarial_samples_to_train=20, attack_period=50, num_attack_samples=500,
                 model_short_name="lstm", at_model_prefix="lstm-at-bae-kaggle-toxic-comment-",
-                orig_model_prefix="lstm-kaggle-toxic-comment-")
+                orig_model_prefix="lstm-kaggle-toxic-comment-",
+                adv_sample_file="lstm-kaggle-bae.csv")
 
     # prepare dataset
     train_dataset, validation_dataset, test_dataset = return_dataset()
@@ -89,7 +90,7 @@ if __name__ == "__main__":
     adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                          args,
                                                                          list(zip(train_text, train_labels)))
-    save_samples_in_csv("lstm-kaggle-bae.csv", adv_train_text, ground_truth_labels)  # change this name b4 running
+    save_samples_in_csv(args.adv_sample_file, adv_train_text, ground_truth_labels)
     exit()
 
     # prepare dataloader

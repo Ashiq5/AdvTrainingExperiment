@@ -5,7 +5,8 @@ class Args:
                  learning_rate=2e-5, output_dir=None, num_labels=2,
                  adversarial_samples_to_train=500, attack_period=50, num_attack_samples=500,
                  model_short_name="lstm",
-                 at_model_prefix=None, orig_model_prefix=None):
+                 at_model_prefix=None, orig_model_prefix=None,
+                 adv_sample_file=None):
         self.attack_class_for_training = attack_class_for_training
         self.attack_class_for_testing = attack_class_for_testing
         self.dataset = dataset
@@ -26,3 +27,4 @@ class Args:
         self.model_short_name = model_short_name
         self.at_model_prefix = at_model_prefix
         self.orig_model_prefix = orig_model_prefix
+        self.adv_sample_file = adv_sample_file
