@@ -19,7 +19,8 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
         args.attack_class_for_training = None
         # training the model
         trained_model, train_losses = train(args, model_wrapper, data_loaders=[adv_train_dataloader, eval_dataloader],
-                                            pre_dataset=(train_text + adv_train_text, train_labels + ground_truth_labels))
+                                            pre_dataset=(
+                                            train_text + adv_train_text, train_labels + ground_truth_labels))
     else:
         # training the model
         trained_model, train_losses = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader],
@@ -34,11 +35,11 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
 
     # reloading it from disk for evaluation
     model.load_state_dict(torch.load(model_path))
-    evaluate(model, test_dataloader)
+    test_accuracy = evaluate(model, test_dataloader)
 
     # now, test the success rate of attack_class_for_testing on this adv. trained model
     performance = attack(model_wrapper, args, list(zip(test_text, test_labels)))
-    return train_losses, performance
+    return train_losses, test_accuracy, performance
 
 
 def save_samples_in_csv(fn):
@@ -54,7 +55,7 @@ def save_result_in_csv(fn, details):
     with open('result/' + fn, mode='w') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(['Original Text', 'Perturbed Text', 'Attack Output',
-                                  'Original Output', 'Ground Truth Output', 'Result'])
+                             'Original Output', 'Ground Truth Output', 'Result'])
 
         for detail in details:
             csv_writer.writerow(detail)
@@ -65,8 +66,8 @@ if __name__ == "__main__":
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
     # You just need to change the parameters here
     args = Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[0],
-                dataset="kaggle-toxic-comment", batch_size=32, epochs=100,
-                adversarial_samples_to_train=3, attack_period=50, num_attack_samples=500,
+                dataset="kaggle-toxic-comment", batch_size=32, epochs=2,
+                adversarial_samples_to_train=3, attack_period=50, num_attack_samples=5,
                 model_short_name="lstm", at_model_prefix="lstm-at-bae-kaggle-toxic-comment-",
                 orig_model_prefix="lstm-kaggle-toxic-comment-",
                 adv_sample_file="lstm-kaggle-bae.csv")
@@ -109,7 +110,8 @@ if __name__ == "__main__":
     )
 
     # adversarial
-    at_train_losses, at_performance = train_evaluate_attack(model_wrapper, model_name_prefix=args.at_model_prefix)
+    at_train_losses, at_test_accuracy, at_performance = train_evaluate_attack(model_wrapper,
+                                                                              model_name_prefix=args.at_model_prefix)
 
     # define model and tokenizer again for training non-adversarially, gets retrained otherwise
     if args.model_short_name == "lstm":
@@ -119,9 +121,9 @@ if __name__ == "__main__":
     model = model_wrapper.model
     tokenizer = model_wrapper.tokenizer
     # now do non-adversarially to compare with the old attack performance
-    orig_train_losses, orig_performance = train_evaluate_attack(model_wrapper,
-                                                                model_name_prefix=args.orig_model_prefix,
-                                                                adversarial_training=False)
+    orig_train_losses, orig_test_accuracy, orig_performance = train_evaluate_attack(model_wrapper,
+                                                                                    model_name_prefix=args.orig_model_prefix,
+                                                                                    adversarial_training=False)
 
     with open('result/' + args.at_model_prefix + '-loss.txt', 'w') as f:
         for idx, loss in enumerate(at_train_losses):
@@ -132,13 +134,14 @@ if __name__ == "__main__":
             f.write("%lf %lf\n" % (idx, loss))
 
     with open('result/' + args.at_model_prefix + '-performance.txt', 'w') as f:
+        f.write("%lf\n" % at_test_accuracy)
         for item in at_performance[0]:
-            f.write("%s %lf\n" % (item[0], item[1]))
+            f.write(item[0] + " %lf\n" % item[1])
 
     with open('result/' + args.orig_model_prefix + '-performance.txt', 'w') as f:
+        f.write("%lf\n" % orig_test_accuracy)
         for item in orig_performance[0]:
-            f.write("%s %lf\n" % (item[0], item[1]))
+            f.write(item[0] + " %lf\n" % item[1])
 
     save_result_in_csv(args.at_model_prefix + '-details.csv', at_performance[1])
     save_result_in_csv(args.orig_model_prefix + '-details.csv', orig_performance[1])
-

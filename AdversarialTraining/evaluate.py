@@ -26,4 +26,4 @@ def _get_test_score(dataloader, model, loss_function):
 
 def evaluate(model, test_dataloader):
     test_accuracy, test_loss = _get_test_score(test_dataloader, model, torch.nn.CrossEntropyLoss())
-    print("Test Accuracy: ", test_accuracy, "Test Loss: ", test_loss)
+    return test_accuracy
