@@ -21,10 +21,10 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
     #     trained_model, train_losses = train(args, model_wrapper, data_loaders=[adv_train_dataloader, eval_dataloader],
     #                                         pre_dataset=(
     #                                         train_text + adv_train_text, train_labels + ground_truth_labels))
-    else:
-        # training the model
-        trained_model, train_losses = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader],
-                                            pre_dataset=(train_text, train_labels))
+    # else:
+    # training the model
+    trained_model, train_losses = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader],
+                                        pre_dataset=(train_text, train_labels))
 
     # saving the model
     output_dir = "models/"
