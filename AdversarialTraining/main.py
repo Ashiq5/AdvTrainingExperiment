@@ -15,12 +15,12 @@ from textattack.models.wrappers import PyTorchModelWrapper
 def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_prefix=None, method="pre-generate"):
     if not adversarial_training:
         args.attack_class_for_training = None
-    if method == "pre-generate":
-        args.attack_class_for_training = None
-        # training the model
-        trained_model, train_losses = train(args, model_wrapper, data_loaders=[adv_train_dataloader, eval_dataloader],
-                                            pre_dataset=(
-                                            train_text + adv_train_text, train_labels + ground_truth_labels))
+    # if method == "pre-generate":
+    #     args.attack_class_for_training = None
+    #     # training the model
+    #     trained_model, train_losses = train(args, model_wrapper, data_loaders=[adv_train_dataloader, eval_dataloader],
+    #                                         pre_dataset=(
+    #                                         train_text + adv_train_text, train_labels + ground_truth_labels))
     else:
         # training the model
         trained_model, train_losses = train(args, model_wrapper, data_loaders=[train_dataloader, eval_dataloader],
