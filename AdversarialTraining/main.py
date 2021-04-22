@@ -66,7 +66,7 @@ if __name__ == "__main__":
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
     # You just need to change the parameters here
     args = Args(attack_class_for_training=None, attack_class_for_testing=attack_classes[0],
-                dataset="kaggle-toxic-comment", batch_size=32, epochs=2,
+                dataset="kaggle-toxic-comment", batch_size=32, epochs=200,
                 adversarial_samples_to_train=2000, attack_period=50, num_attack_samples=5,
                 model_short_name="lstm", at_model_prefix="lstm-at-bae-kaggle-toxic-comment-",
                 orig_model_prefix="lstm-kaggle-toxic-comment-",
