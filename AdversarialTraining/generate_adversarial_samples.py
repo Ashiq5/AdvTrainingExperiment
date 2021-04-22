@@ -19,9 +19,9 @@ def _generate_adversarial_examples(model, args, dataset, save=False):
     adv_train_text, ground_truth_labels = [], []
     num_successes = 0
     if isinstance(save, str):
-        with open('adv_samples/' + save, mode='w') as csv_file:
-            csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            csv_writer.writerow(['Adversarial Text', 'Ground Truth Output'])
+        csv_file = open('adv_samples/' + save, mode='w')
+        csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerow(['Adversarial Text', 'Ground Truth Output'])
     for idx, result in enumerate(attack.attack_dataset(dataset)):
         print(idx, " no. attack tried")
         if isinstance(result, SuccessfulAttackResult):
@@ -38,5 +38,4 @@ def _generate_adversarial_examples(model, args, dataset, save=False):
             print(num_successes, " attack skipped")
         if num_successes >= args.adversarial_samples_to_train:
             break
-
     return adv_train_text, ground_truth_labels
