@@ -90,8 +90,9 @@ if __name__ == "__main__":
     # pre-generate and save adversarial samples in a csv
     adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                          args,
-                                                                         list(zip(train_text, train_labels)))
-    save_samples_in_csv(args.adv_sample_file)
+                                                                         list(zip(train_text, train_labels)),
+                                                                         save=args.adv_sample_file)
+    # save_samples_in_csv(args.adv_sample_file)
     exit()
 
     # prepare dataloader
