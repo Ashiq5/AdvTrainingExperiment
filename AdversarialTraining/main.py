@@ -76,7 +76,7 @@ if __name__ == "__main__":
     train_text, train_labels = prepare_dataset_for_training(train_dataset)
     eval_text, eval_labels = prepare_dataset_for_training(validation_dataset)
     test_text, test_labels = prepare_dataset_for_training(test_dataset)
-    # adv_train_text, ground_truth_labels = prepare_adversarial_texts("adv_samples/" + "lstm-kaggle-textfooler.csv")
+    adv_train_text, ground_truth_labels = prepare_adversarial_texts("adv_samples/" + args.adv_sample_file)
 
     # define model and tokenizer
     if args.model_short_name == "lstm":
