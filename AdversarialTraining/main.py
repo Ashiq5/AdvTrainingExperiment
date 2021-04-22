@@ -66,7 +66,7 @@ if __name__ == "__main__":
     # You just need to change the parameters here
     args = Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[0],
                 dataset="kaggle-toxic-comment", batch_size=32, epochs=100,
-                adversarial_samples_to_train=20, attack_period=50, num_attack_samples=500,
+                adversarial_samples_to_train=3, attack_period=50, num_attack_samples=500,
                 model_short_name="lstm", at_model_prefix="lstm-at-bae-kaggle-toxic-comment-",
                 orig_model_prefix="lstm-kaggle-toxic-comment-",
                 adv_sample_file="lstm-kaggle-bae.csv")
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     train_text, train_labels = prepare_dataset_for_training(train_dataset)
     eval_text, eval_labels = prepare_dataset_for_training(validation_dataset)
     test_text, test_labels = prepare_dataset_for_training(test_dataset)
-    adv_train_text, ground_truth_labels = prepare_adversarial_texts("adv_samples/" + args.adv_sample_file)
+    # adv_train_text, ground_truth_labels = prepare_adversarial_texts("adv_samples/" + args.adv_sample_file)
 
     # define model and tokenizer
     if args.model_short_name == "lstm":
