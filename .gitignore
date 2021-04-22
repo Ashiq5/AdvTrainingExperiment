@@ -1,2 +1,5 @@
 .idea/*
 config.yml
+AdversarialTraining/adv_samples/
+AdversarialTraining/models/
+AdversarialTraining/result/

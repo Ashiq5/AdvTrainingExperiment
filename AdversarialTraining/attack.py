@@ -18,16 +18,27 @@ def log_summary(results):
     skipped_attacks = 0
     successful_attacks = 0
     max_words_changed = 0
+    details = []
+    flag = ""
     for i, result in enumerate(results):
         all_num_words[i] = len(result.original_result.attacked_text.words)
         if isinstance(result, FailedAttackResult):
             failed_attacks += 1
+            flag = "Failed"
+            details.append((result.original_text(), result.perturbed_text(), result.perturbed_result.output,
+                            result.original_result.output, result.original_result.ground_truth_output, flag))
             continue
         elif isinstance(result, SkippedAttackResult):
             skipped_attacks += 1
+            flag = "Skipped"
+            details.append((result.original_text(), result.perturbed_text(), result.perturbed_result.output,
+                            result.original_result.output, result.original_result.ground_truth_output, flag))
             continue
         else:
             successful_attacks += 1
+            flag = "Succeeded"
+            details.append((result.original_text(), result.perturbed_text(), result.perturbed_result.output,
+                            result.original_result.output, result.original_result.ground_truth_output, flag))
         num_words_changed = len(
             result.original_result.attacked_text.all_words_diff(
                 result.perturbed_result.attacked_text
@@ -95,7 +106,7 @@ def log_summary(results):
     avg_num_queries = str(round(avg_num_queries, 2))
     summary_table_rows.append(["Avg num queries:", avg_num_queries])
 
-    return summary_table_rows
+    return summary_table_rows, details
 
 
 def attack(model, args, dataset):
@@ -114,7 +125,8 @@ def attack(model, args, dataset):
     num_attacks = 0
     for result in results_iterable:
         print(num_attacks, " attack tried")
-        if num_attacks > args.num_attack_samples:
+        if num_attacks >= args.num_attack_samples:
             break
         results.append(result)
+        num_attacks += 1
     return log_summary(results)

@@ -47,9 +47,11 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
     train_dataloader = data_loaders[0]
     print("Num GPUs", num_gpus)
 
+    train_losses = []
     for epoch_no in range(0, epochs):
         train_acc, train_loss = epoch(train_dataloader, model_wrapper.model, loss_function, optimizer)
         print("Epoch:", epoch_no, "Loss: ", train_loss, "Train Acc: ", train_acc * 100, "%")
+        train_losses.append(train_loss)
 
         if args.attack_class_for_training and epoch_no % args.attack_period == 0:
             print("Generating adversarial samples at epoch ", epoch_no)
@@ -62,4 +64,4 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
                 args.batch_size
             )
     print("Training finished.")
-    return model_wrapper.model
+    return model_wrapper.model, train_losses
