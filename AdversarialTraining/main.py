@@ -127,11 +127,11 @@ if __name__ == "__main__":
 
     with open('result/' + args.at_model_prefix + '-loss.txt', 'w') as f:
         for idx, loss in enumerate(at_train_losses):
-            f.write("%lf %lf\n" % (idx, loss))
+            f.write("%d %lf\n" % (idx, loss))
 
     with open('result/' + args.orig_model_prefix + '-loss.txt', 'w') as f:
         for idx, loss in enumerate(orig_train_losses):
-            f.write("%lf %lf\n" % (idx, loss))
+            f.write("%d %lf\n" % (idx, loss))
 
     with open('result/' + args.at_model_prefix + '-performance.txt', 'w') as f:
         f.write("%lf\n" % at_test_accuracy)
@@ -139,7 +139,7 @@ if __name__ == "__main__":
             f.write(item[0] + " " + str(item[1]) + "\n")
 
     with open('result/' + args.orig_model_prefix + '-performance.txt', 'w') as f:
-        f.write("%lf\n" % orig_test_accuracy)
+        f.write("Test Accuracy: %lf\n" % orig_test_accuracy)
         for item in orig_performance[0]:
             f.write(item[0] + " " + str(item[1]) + "\n")
 
