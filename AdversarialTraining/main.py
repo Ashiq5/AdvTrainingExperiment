@@ -63,7 +63,7 @@ def get_args():
     # You just need to change the parameters here
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
     at = True
-    if at:
+    if not at:
         return Args(dataset="kaggle-toxic-comment", batch_size=32, epochs=75,
                     model_short_name="lstm", num_attack_samples=500,
                     adversarial_samples_to_train=2000,
@@ -122,13 +122,13 @@ if __name__ == "__main__":
     if load_from_disk:
         model_wrapper = load_model_from_disk()
     else:
-        train_losses, test_accuracy, performance = train_evaluate_attack(model_wrapper,
-                                                                         model_name_prefix=args.orig_model_prefix,
-                                                                         adversarial_training=args.adversarial_training)
         if args.adversarial_training:
             prefix = args.at_model_prefix
         else:
             prefix = args.orig_model_prefix
+        train_losses, test_accuracy, performance = train_evaluate_attack(model_wrapper,
+                                                                         model_name_prefix=prefix,
+                                                                         adversarial_training=args.adversarial_training)
 
         with open('result/' + prefix + '-loss.txt', 'w') as f:
             for idx, loss in enumerate(train_losses):
