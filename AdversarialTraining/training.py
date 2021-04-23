@@ -53,7 +53,7 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
         print("Epoch:", epoch_no, "Loss: ", train_loss, "Train Acc: ", train_acc * 100, "%")
         train_losses.append(train_loss)
 
-        if args.adversarial_training and epoch_no % args.attack_period == 0:
+        if False and args.adversarial_training and epoch_no % args.attack_period == 0:
             print("Generating adversarial samples at epoch ", epoch_no)
             adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                                  args,
