@@ -39,6 +39,12 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
     return train_losses, test_accuracy, performance
 
 
+def just_attack(model_wrapper):
+    # now, test the success rate of attack_class_for_testing on this adv. trained model
+    performance = attack(model_wrapper, args, list(zip(test_text, test_labels)))
+    return performance
+
+
 def save_samples_in_csv(fn):
     with open('adv_samples/' + fn, mode='w') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -73,7 +79,7 @@ def get_args():
         return Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[1],
                     dataset="kaggle-toxic-comment", batch_size=32, epochs=75,
                     num_attack_samples=500,
-                    model_short_name="lstm", at_model_prefix="lstm-at-bae-kaggle-toxic-comment-",
+                    model_short_name="lstm", at_model_prefix="lstm-tb_at-bae-kaggle-toxic-comment-",
                     adv_sample_file="lstm-kaggle-textbugger.csv", adversarial_training=True)
 
 
@@ -121,6 +127,7 @@ if __name__ == "__main__":
     # either load_from_disk or train
     if load_from_disk:
         model_wrapper = load_model_from_disk()
+        just_attack(model_wrapper)
     else:
         if args.adversarial_training:
             prefix = args.at_model_prefix
