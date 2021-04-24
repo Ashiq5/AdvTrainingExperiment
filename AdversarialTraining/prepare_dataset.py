@@ -36,8 +36,8 @@ def load_dataset_from_file(type_of_file, dataset_name):
     return dataset
 
 
-def return_dataset():
-    dataset = load_dataset_from_file('csv', 'kaggle-toxic-comment')
+def return_dataset(name):
+    dataset = load_dataset_from_file('csv', name)
 
     train_val_dataset = dataset['train'].train_test_split(test_size=0.1)
     train_dataset = train_val_dataset['train']

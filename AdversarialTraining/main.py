@@ -74,10 +74,11 @@ def get_args():
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
     at = False  # Todo: change here
     if not at:  # normal training
-        return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
+        return Args(dataset="imdb", model_short_name="lstm",
                     batch_size=32, epochs=75,
                     adversarial_training=False,
-                    orig_model_prefix="lstm-kaggle-toxic-comment-",
+                    orig_model_prefix="lstm-imdb-",
+                    max_length=2500,
 
                     # evaluate
                     attack_class_for_testing=attack_classes[1],  # test robustness against which model
@@ -111,7 +112,7 @@ def load_model_from_disk():
 
 if __name__ == "__main__":
     # 3 tasks: train, evaluate, pre-generate
-    task = "pre-generate"  # Todo: change this
+    task = "train"  # Todo: change this
     args = get_args()
 
     # define model and tokenizer
@@ -123,7 +124,7 @@ if __name__ == "__main__":
     tokenizer = model_wrapper.tokenizer
 
     # prepare dataset and dataloader
-    train_dataset, validation_dataset, test_dataset = return_dataset()
+    train_dataset, validation_dataset, test_dataset = return_dataset(args.dataset)
     train_text, train_labels = prepare_dataset_for_training(train_dataset)
     eval_text, eval_labels = prepare_dataset_for_training(validation_dataset)
     test_text, test_labels = prepare_dataset_for_training(test_dataset)
