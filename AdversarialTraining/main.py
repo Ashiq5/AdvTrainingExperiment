@@ -93,13 +93,12 @@ def get_args():
         return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
                     batch_size=32, epochs=30,
                     adversarial_training=True,
-
-                    attack_class_for_testing=attack_classes[1],
                     at_model_prefix="lstm-at-tb-kaggle-toxic-comment-",
-                    # lstm model trained using samples from textbugger, testing robustness against bae
-                    num_attack_samples=500,
+                    adv_sample_file="lstm-kaggle-textbugger.csv",
 
-                    adv_sample_file="lstm-kaggle-textbugger.csv"
+                    # evaluate
+                    attack_class_for_testing=attack_classes[1],
+                    num_attack_samples=500,
                     )
 
 
