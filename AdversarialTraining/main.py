@@ -75,7 +75,7 @@ def get_args():
     at = False  # Todo: change here
     if not at:  # normal training
         return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
-                    batch_size=32, epochs=2,
+                    batch_size=32, epochs=75,
                     adversarial_training=False,
                     orig_model_prefix="lstm-kaggle-toxic-comment-",
 
@@ -86,10 +86,10 @@ def get_args():
                     # pre-generate
                     attack_class_for_training=attack_classes[1],
                     # launch which attack to generate adv samples on the trained model
-                    adv_sample_file="lstm-kaggle-textbugger.csv",  # file name of where to save adv. samples
-                    adversarial_samples_to_train=20,  # how many samples in adv_sample_file
+                    adv_sample_file="lstm-kaggle-bae.csv",  # file name of where to save adv. samples
+                    adversarial_samples_to_train=2000,  # how many samples in adv_sample_file
                     )
-    else:
+    else:  # adversarial training
         return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
                     batch_size=32, epochs=30,
                     adversarial_training=True,
@@ -104,7 +104,7 @@ def get_args():
 
 
 def load_model_from_disk():
-    model.load_state_dict(torch.load(""))  # Todo: provide file name here
+    model.load_state_dict(torch.load("/home/grads/iashiq5/AdvTrainingExperiment/AdversarialTraining/models/lstm-kaggle-toxic-comment-2021-04-22-15-46-30-739480.pt"))  # Todo: provide file name here
     model_wrapper = PyTorchModelWrapper(model, tokenizer)
     print(evaluate(model_wrapper.model, test_dataloader))  # for checking whether loading is correct
     return model_wrapper
