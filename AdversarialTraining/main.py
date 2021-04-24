@@ -155,7 +155,7 @@ if __name__ == "__main__":
         else:
             prefix = args.orig_model_prefix
 
-        prefix += args.attack_class_for_testing
+        prefix += args.attack_class_for_testing + "-"
 
         with open('result/' + prefix + '-performance.txt', 'w') as f:
             f.write("Test Accuracy: %lf\n" % test_accuracy)
@@ -173,7 +173,7 @@ if __name__ == "__main__":
                                   model_name_prefix=prefix,
                                   adversarial_training=args.adversarial_training)
 
-        with open('result/' + prefix + '-loss.txt', 'w') as f:
+        with open('loss/' + prefix + '-loss.txt', 'w') as f:
             for idx, loss in enumerate(train_losses):
                 f.write("%d %lf\n" % (idx, loss))
 
