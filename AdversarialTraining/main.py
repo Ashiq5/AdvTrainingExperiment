@@ -12,7 +12,7 @@ import datetime
 from textattack.models.wrappers import PyTorchModelWrapper
 
 
-def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_prefix=None):
+def just_train(model_wrapper, adversarial_training=True, model_name_prefix=None):
     if adversarial_training:
         # training the model
         trained_model, train_losses = train(args, model_wrapper, data_loaders=[adv_train_dataloader, eval_dataloader],
@@ -28,6 +28,8 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
     model_name = model_name_prefix + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     model_path = output_dir + model_name + ".pt"
     torch.save(trained_model.state_dict(), model_path)
+    # just train the model and save it
+    """
     model_wrapper = PyTorchModelWrapper(trained_model, tokenizer)
 
     # reloading it from disk for evaluation
@@ -36,13 +38,15 @@ def train_evaluate_attack(model_wrapper, adversarial_training=True, model_name_p
 
     # now, test the success rate of attack_class_for_testing on this adv. trained model
     performance = attack(model_wrapper, args, list(zip(test_text, test_labels)))
-    return train_losses, test_accuracy, performance
+    """
+    return train_losses  # , test_accuracy, performance
 
 
-def just_attack(model_wrapper):
+def just_evaluate(model_wrapper):
+    test_accuracy = evaluate(model_wrapper.model, test_dataloader)
     # now, test the success rate of attack_class_for_testing on this adv. trained model
     performance = attack(model_wrapper, args, list(zip(test_text, test_labels)))
-    return performance
+    return test_accuracy, performance
 
 
 def save_samples_in_csv(fn):
@@ -68,30 +72,47 @@ def get_args():
     # create args
     # You just need to change the parameters here
     attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
-    at = True
-    if not at:
-        return Args(dataset="kaggle-toxic-comment", batch_size=32, epochs=75,
-                    model_short_name="lstm", num_attack_samples=500,
-                    adversarial_samples_to_train=2000,
-                    orig_model_prefix="lstm-kaggle-toxic-comment-", attack_class_for_training=attack_classes[2],
-                    adv_sample_file="lstm-kaggle-textbugger.csv", adversarial_training=False)
+    at = False  # Todo: change here
+    if not at:  # normal training
+        return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
+                    batch_size=32, epochs=2,
+                    adversarial_training=False,
+                    orig_model_prefix="lstm-kaggle-toxic-comment-",
+
+                    # evaluate
+                    attack_class_for_testing=attack_classes[1],  # test robustness against which model
+                    num_attack_samples=50,  # how many samples to test robustness with
+
+                    # pre-generate
+                    attack_class_for_training=attack_classes[1],
+                    # launch which attack to generate adv samples on the trained model
+                    adv_sample_file="lstm-kaggle-textbugger.csv",  # file name of where to save adv. samples
+                    adversarial_samples_to_train=20,  # how many samples in adv_sample_file
+                    )
     else:
-        return Args(attack_class_for_training=attack_classes[1], attack_class_for_testing=attack_classes[1],
-                    dataset="kaggle-toxic-comment", batch_size=32, epochs=75,
+        return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
+                    batch_size=32, epochs=30,
+                    adversarial_training=True,
+
+                    attack_class_for_testing=attack_classes[1],
+                    at_model_prefix="lstm-at-tb-kaggle-toxic-comment-",
+                    # lstm model trained using samples from textbugger, testing robustness against bae
                     num_attack_samples=500,
-                    model_short_name="lstm", at_model_prefix="lstm-tb_at-bae-kaggle-toxic-comment-",
-                    adv_sample_file="lstm-kaggle-textbugger.csv", adversarial_training=True)
+
+                    adv_sample_file="lstm-kaggle-textbugger.csv"
+                    )
 
 
 def load_model_from_disk():
-    model.load_state_dict(torch.load(""))  # provide file name here
+    model.load_state_dict(torch.load(""))  # Todo: provide file name here
     model_wrapper = PyTorchModelWrapper(model, tokenizer)
     print(evaluate(model_wrapper.model, test_dataloader))  # for checking whether loading is correct
     return model_wrapper
 
 
 if __name__ == "__main__":
-    load_from_disk = False  # change this
+    # 3 tasks: train, evaluate, pre-generate
+    task = "pre-generate"  # Todo: change this
     args = get_args()
 
     # define model and tokenizer
@@ -125,31 +146,37 @@ if __name__ == "__main__":
         )
 
     # either load_from_disk or train
-    if load_from_disk:
+    if task == "evaluate":
         model_wrapper = load_model_from_disk()
-        just_attack(model_wrapper)
-    else:
+        test_accuracy, performance = just_evaluate(model_wrapper)
+
         if args.adversarial_training:
             prefix = args.at_model_prefix
         else:
             prefix = args.orig_model_prefix
-        train_losses, test_accuracy, performance = train_evaluate_attack(model_wrapper,
-                                                                         model_name_prefix=prefix,
-                                                                         adversarial_training=args.adversarial_training)
-
-        with open('result/' + prefix + '-loss.txt', 'w') as f:
-            for idx, loss in enumerate(train_losses):
-                f.write("%d %lf\n" % (idx, loss))
 
         with open('result/' + prefix + '-performance.txt', 'w') as f:
             f.write("Test Accuracy: %lf\n" % test_accuracy)
             for item in performance[0]:
                 f.write(item[0] + " " + str(item[1]) + "\n")
 
-        save_result_in_csv(args.orig_model_prefix + '-details.csv', performance[1])
+        save_result_in_csv(prefix + '-details.csv', performance[1])
 
-    # pre-generate and save adversarial samples in a csv
-    if not args.adversarial_training:
+    elif task == "train":
+        if args.adversarial_training:
+            prefix = args.at_model_prefix
+        else:
+            prefix = args.orig_model_prefix
+        train_losses = just_train(model_wrapper,
+                                  model_name_prefix=prefix,
+                                  adversarial_training=args.adversarial_training)
+
+        with open('result/' + prefix + '-loss.txt', 'w') as f:
+            for idx, loss in enumerate(train_losses):
+                f.write("%d %lf\n" % (idx, loss))
+
+    elif task == "pre-generate":  # pre-generate and save adversarial samples in a csv
+        model_wrapper = load_model_from_disk()
         adv_train_text, ground_truth_labels = _generate_adversarial_examples(model_wrapper,
                                                                              args,
                                                                              list(zip(train_text, train_labels)),
