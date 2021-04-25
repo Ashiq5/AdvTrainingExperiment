@@ -59,7 +59,7 @@ def save_samples_in_csv(fn):
 
 
 def save_result_in_csv(fn, details):
-    with open('result/' + fn, mode='w') as csv_file:
+    with open('details/' + fn, mode='w') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(['Original Text', 'Perturbed Text', 'Attack Output',
                              'Original Output', 'Ground Truth Output', 'Result'])

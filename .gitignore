@@ -3,3 +3,6 @@ config.yml
 AdversarialTraining/adv_samples/
 AdversarialTraining/models/
 AdversarialTraining/result/
+AdversarialTraining/details/
+AdversarialTraining/loss/
+AdversarialTraining/__pycache__/
