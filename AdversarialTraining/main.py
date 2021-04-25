@@ -149,7 +149,7 @@ if __name__ == "__main__":
         )
 
     if task == "evaluate":
-        for i, j in zip([0, 1, 2], [250, 250, 100]):
+        for i, j in zip([0, 1, 2], [250, 100, 250]):
             args.attack_class_for_testing = attack_classes[i]
             args.num_attack_samples = j
             model_wrapper = load_model_from_disk()
