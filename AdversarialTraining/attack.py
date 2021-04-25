@@ -119,6 +119,7 @@ def attack(model, args, dataset):
 
     :return: list(AttackResult) of adversarial examples.
     """
+    print(args.attack_class_for_testing, args.num_attack_samples)
     attack_model = eval(args.attack_class_for_testing).build(model)
     results_iterable = attack_model.attack_dataset(dataset)
     results = []

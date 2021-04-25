@@ -68,11 +68,13 @@ def save_result_in_csv(fn, details):
             csv_writer.writerow(detail)
 
 
+attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
+
+
 def get_args():
     # create args
     # You just need to change the parameters here
-    attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
-    at = False  # Todo: change here
+    at = True  # Todo: change here
     if not at:  # normal training
         return Args(dataset="imdb", model_short_name="lstm",
                     batch_size=32, epochs=75,
@@ -92,19 +94,20 @@ def get_args():
                     )
     else:  # adversarial training
         return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
-                    batch_size=32, epochs=30,
+                    batch_size=32, epochs=75,
                     adversarial_training=True,
                     at_model_prefix="lstm-at-tb-kaggle-toxic-comment-",
-                    adv_sample_file="lstm-kaggle-textbugger.csv",
+                    adv_sample_file="lstm-kaggle-tb.csv",
 
                     # evaluate
-                    attack_class_for_testing=attack_classes[1],
-                    num_attack_samples=500,
+                    attack_class_for_testing=attack_classes[0],
+                    num_attack_samples=250,
                     )
 
 
 def load_model_from_disk():
-    model.load_state_dict(torch.load("/home/grads/iashiq5/AdvTrainingExperiment/AdversarialTraining/models/lstm-kaggle-toxic-comment-2021-04-22-15-46-30-739480.pt"))  # Todo: provide file name here
+    model.load_state_dict(torch.load(
+        "/home/grads/iashiq5/AdvTrainingExperiment/AdversarialTraining/models/lstm-at-tb-kaggle-toxic-comment-2021-04-23-23-41-56-085474.pt"))  # Todo: provide file name here
     model_wrapper = PyTorchModelWrapper(model, tokenizer)
     print(evaluate(model_wrapper.model, test_dataloader))  # for checking whether loading is correct
     return model_wrapper
@@ -112,7 +115,7 @@ def load_model_from_disk():
 
 if __name__ == "__main__":
     # 3 tasks: train, evaluate, pre-generate
-    task = "train"  # Todo: change this
+    task = "evaluate"  # Todo: change this
     args = get_args()
 
     # define model and tokenizer
@@ -145,24 +148,26 @@ if __name__ == "__main__":
             tokenizer, train_text + adv_train_text, train_labels + ground_truth_labels, args.batch_size
         )
 
-    # either load_from_disk or train
     if task == "evaluate":
-        model_wrapper = load_model_from_disk()
-        test_accuracy, performance = just_evaluate(model_wrapper)
+        for i, j in zip([0, 1, 2], [250, 250, 100]):
+            args.attack_class_for_testing = attack_classes[i]
+            args.num_attack_samples = j
+            model_wrapper = load_model_from_disk()
+            test_accuracy, performance = just_evaluate(model_wrapper)
 
-        if args.adversarial_training:
-            prefix = args.at_model_prefix
-        else:
-            prefix = args.orig_model_prefix
+            if args.adversarial_training:
+                prefix = args.at_model_prefix
+            else:
+                prefix = args.orig_model_prefix
 
-        prefix += args.attack_class_for_testing + "-"
+            prefix += args.attack_class_for_testing + "-"
 
-        with open('result/' + prefix + '-performance.txt', 'w') as f:
-            f.write("Test Accuracy: %lf\n" % test_accuracy)
-            for item in performance[0]:
-                f.write(item[0] + " " + str(item[1]) + "\n")
+            with open('result/' + prefix + '-performance.txt', 'w') as f:
+                f.write("Test Accuracy: %lf\n" % test_accuracy)
+                for item in performance[0]:
+                    f.write(item[0] + " " + str(item[1]) + "\n")
 
-        save_result_in_csv(prefix + '-details.csv', performance[1])
+            save_result_in_csv(prefix + '-details.csv', performance[1])
 
     elif task == "train":
         if args.adversarial_training:
