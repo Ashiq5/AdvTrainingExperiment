@@ -11,11 +11,13 @@ def prepare_adversarial_texts(filename):
         adv_texts, ground_truth_labels = [], []
         for row in csv_reader:
             if line_count == 0:
+                line_count += 1
                 continue
             else:
                 adv_texts.append(row[0])
-                ground_truth_labels.append(row[1])
+                ground_truth_labels.append(int(row[1]))
                 line_count += 1
+        print("Adv. Training:", len(adv_texts))
     return adv_texts, ground_truth_labels
 
 

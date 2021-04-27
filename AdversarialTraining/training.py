@@ -45,6 +45,7 @@ def train(args, model_wrapper, data_loaders=None, pre_dataset=None):
     epochs = args.epochs
     num_gpus = torch.cuda.device_count()
     train_dataloader = data_loaders[0]
+    print("Length: ", len(train_dataloader.dataset))
     print("Num GPUs", num_gpus)
 
     train_losses = []

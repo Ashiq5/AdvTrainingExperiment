@@ -25,7 +25,7 @@ def just_train(model_wrapper, adversarial_training=True, model_name_prefix=None)
 
     # saving the model
     output_dir = "models/"
-    model_name = model_name_prefix + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
+    model_name = model_name_prefix
     model_path = output_dir + model_name + ".pt"
     torch.save(trained_model.state_dict(), model_path)
     # just train the model and save it
@@ -93,10 +93,10 @@ def get_args():
                     adversarial_samples_to_train=2000,  # how many samples in adv_sample_file
                     )
     else:  # adversarial training
-        return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
+        return Args(dataset="kaggle-toxic-comment", model_short_name="cnn",
                     batch_size=32, epochs=75,
                     adversarial_training=True,
-                    at_model_prefix="lstm-at-tb-kaggle-toxic-comment-",
+                    at_model_prefix="cnn-at-tb-kaggle-toxic-comment",
                     adv_sample_file="lstm-kaggle-tb.csv",
 
                     # evaluate
@@ -115,7 +115,7 @@ def load_model_from_disk():
 
 if __name__ == "__main__":
     # 3 tasks: train, evaluate, pre-generate
-    task = "evaluate"  # Todo: change this
+    task = "train"  # Todo: change this
     args = get_args()
 
     # define model and tokenizer
