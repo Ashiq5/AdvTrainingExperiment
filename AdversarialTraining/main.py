@@ -93,11 +93,11 @@ def get_args():
                     adversarial_samples_to_train=2000,  # how many samples in adv_sample_file
                     )
     else:  # adversarial training
-        return Args(dataset="kaggle-toxic-comment", model_short_name="cnn",
+        return Args(dataset="imdb", model_short_name="cnn",
                     batch_size=32, epochs=75,
                     adversarial_training=True,
-                    at_model_prefix="cnn-at-tb-kaggle-toxic-comment",
-                    adv_sample_file="lstm-kaggle-tb.csv",
+                    at_model_prefix="cnn-at-tb-imdb",
+                    adv_sample_file="lstm-imdb-tb.csv",
 
                     # evaluate
                     attack_class_for_testing=attack_classes[0],
@@ -174,6 +174,7 @@ if __name__ == "__main__":
             prefix = args.at_model_prefix
         else:
             prefix = args.orig_model_prefix
+        print("Training, ", prefix)
         train_losses = just_train(model_wrapper,
                                   model_name_prefix=prefix,
                                   adversarial_training=args.adversarial_training)
