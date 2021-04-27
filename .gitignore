@@ -6,3 +6,5 @@ AdversarialTraining/result/
 AdversarialTraining/details/
 AdversarialTraining/loss/
 AdversarialTraining/__pycache__/
+AdversarialTraining/old_models
+AdversarialTraining/old_result
