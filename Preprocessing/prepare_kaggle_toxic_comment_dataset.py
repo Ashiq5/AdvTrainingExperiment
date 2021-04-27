@@ -19,6 +19,8 @@ def prepare_training_file():
                 # print(f'Column names are {", ".join(row)}')
                 line_count += 1
             else:
+                if len(row[1]) > 256:
+                    continue
                 label = 0
                 for i in row[2:8]:
                     label = int(i) or label
@@ -51,6 +53,8 @@ def prepare_test_file():
                 # print(f'Column names are {", ".join(row)}')
                 line_count += 1
             else:
+                if len(row[1]) > 256:
+                    continue
                 label = 0
                 for i in row[1:7]:
                     label = int(i) or label
