@@ -93,11 +93,11 @@ def get_args():
                     adversarial_samples_to_train=2000,  # how many samples in adv_sample_file
                     )
     else:  # adversarial training
-        return Args(dataset="imdb", model_short_name="cnn",
+        return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
                     batch_size=32, epochs=75,
                     adversarial_training=True,
-                    at_model_prefix="cnn-at-tb-imdb",
-                    adv_sample_file="lstm-imdb-tb.csv",
+                    at_model_prefix="lstm-at-tb-imdb",
+                    adv_sample_file="lstm-kaggle-tb.csv",
 
                     # evaluate
                     attack_class_for_testing=attack_classes[0],
