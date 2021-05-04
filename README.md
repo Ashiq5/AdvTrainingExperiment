@@ -10,8 +10,10 @@ To run this project, you need to do the following things:
 3. Open the main.py (entry point) file and change the TODOs according to the following
    
    a. For training, set the **task** variable to "train"
+   
        i. if you want to train your model normally, set **at** to False, specify the normal training parameters
    in Args constructor
+   
        ii. if you want to train your model normally, set **at** to True, specify the adversarial training parameters
    in Args constructor
    
