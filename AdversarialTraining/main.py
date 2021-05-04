@@ -8,7 +8,6 @@ from attack import attack
 from generate_adversarial_samples import _generate_adversarial_examples
 import torch
 import csv
-import datetime
 from textattack.models.wrappers import PyTorchModelWrapper
 
 
@@ -28,18 +27,8 @@ def just_train(model_wrapper, adversarial_training=True, model_name_prefix=None)
     model_name = model_name_prefix
     model_path = output_dir + model_name + ".pt"
     torch.save(trained_model.state_dict(), model_path)
-    # just train the model and save it
-    """
-    model_wrapper = PyTorchModelWrapper(trained_model, tokenizer)
 
-    # reloading it from disk for evaluation
-    model.load_state_dict(torch.load(model_path))
-    test_accuracy = evaluate(model, test_dataloader)
-
-    # now, test the success rate of attack_class_for_testing on this adv. trained model
-    performance = attack(model_wrapper, args, list(zip(test_text, test_labels)))
-    """
-    return train_losses  # , test_accuracy, performance
+    return train_losses
 
 
 def just_evaluate(model_wrapper):
@@ -87,8 +76,7 @@ def get_args():
                     num_attack_samples=50,  # how many samples to test robustness with
 
                     # pre-generate
-                    attack_class_for_training=attack_classes[1],
-                    # launch which attack to generate adv samples on the trained model
+                    attack_class_for_training=attack_classes[1],  # specify which attack to generate adv samples on the trained model
                     adv_sample_file="lstm-kaggle-bae.csv",  # file name of where to save adv. samples
                     adversarial_samples_to_train=2000,  # how many samples in adv_sample_file
                     )
