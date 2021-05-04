@@ -5,7 +5,7 @@ It is an experiment to check whether adversarial training is transferable in the
 To run this project, you need to do the following things:
 1. Create a file **config.yml** in the project root directory and copy the **config.yml.demo** file contents to the new file
 2. Change the file paths if need be    
-3. Open the main.py (entry point) file and change the TODOs according to the following
+3. Open the AdversarialTraining/main.py (entry point) file and change the TODOs according to the following
    
    a. For training, set the **task** variable to "train"
    
