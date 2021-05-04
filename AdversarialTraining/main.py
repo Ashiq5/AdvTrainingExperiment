@@ -64,30 +64,30 @@ def get_args():
     # create args
     # You just need to change the parameters here
     at = True  # Todo: change here
-    if not at:  # normal training
+    if not at:  # for normal training
         return Args(dataset="imdb", model_short_name="lstm",
                     batch_size=32, epochs=75,
                     adversarial_training=False,
-                    orig_model_prefix="lstm-imdb-",
+                    orig_model_prefix="lstm-imdb",
                     max_length=2500,
 
-                    # evaluate
+                    # for evaluate
                     attack_class_for_testing=attack_classes[1],  # test robustness against which model
                     num_attack_samples=50,  # how many samples to test robustness with
 
-                    # pre-generate
+                    # for pre-generate
                     attack_class_for_training=attack_classes[1],  # specify which attack to generate adv samples on the trained model
                     adv_sample_file="lstm-kaggle-bae.csv",  # file name of where to save adv. samples
                     adversarial_samples_to_train=2000,  # how many samples in adv_sample_file
                     )
-    else:  # adversarial training
+    else:  # for adversarial training
         return Args(dataset="kaggle-toxic-comment", model_short_name="lstm",
                     batch_size=32, epochs=75,
                     adversarial_training=True,
                     at_model_prefix="lstm-at-tb-imdb",
-                    adv_sample_file="lstm-kaggle-tb.csv",
+                    adv_sample_file="lstm-kaggle-tb.csv",  # from which file program will read adv. samples
 
-                    # evaluate
+                    # for evaluate
                     attack_class_for_testing=attack_classes[0],
                     num_attack_samples=250,
                     )
@@ -137,7 +137,7 @@ if __name__ == "__main__":
         )
 
     if task == "evaluate":
-        for i, j in zip([0, 1, 2], [250, 100, 250]):
+        for i, j in zip([0, 1, 2], [250, 100, 250]):  # change here if you want to test with diff. no. of adv. samples
             args.attack_class_for_testing = attack_classes[i]
             args.num_attack_samples = j
             model_wrapper = load_model_from_disk()
