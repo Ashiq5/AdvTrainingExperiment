@@ -18,4 +18,7 @@ To run this project, you need to do the following things:
    specify the parameters for pre-generate in Args constructor, specify the model path that you want to attack
    
    c. For evaluating model's performance, set the **task** variable to "evaluate", set **at** to True or False
-   depending on whether you want to evaluate a normal model or an adversarial model. 
+   depending on whether you want to evaluate a normal model or an adversarial model.
+   
+
+Reference: https://github.com/QData/TextAttack
