@@ -1,7 +1,7 @@
 from datasets import load_dataset
 import csv
 import config_with_yaml as config
-cfg = config.load("../config.yml")
+cfg = config.load("config.yml")
 
 
 def prepare_adversarial_texts(filename):

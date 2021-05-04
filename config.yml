@@ -1,6 +1,6 @@
 # config.yml
 Path:
-  kaggle-toxic-comment-directory: "/Users/ashiq/Documents/VTech/Security Analytics/Project5984/dataset/"
+  kaggle-toxic-comment-directory: "../dataset/"
   kaggle-toxic-comment:
     train: "dataset/kaggle-train-short.csv"
     test: "dataset/kaggle-test-short.csv"
@@ -10,5 +10,5 @@ Path:
   OutputFileName:
     train: 'kaggle-train-short.csv'
     test: 'kaggle-test-short.csv'
-  adv-sample-path: "/home/grads/iashiq5/AdvTrainingExperiment/dataset"
+  adv-sample-path: "adv_samples/"
 peek-which: "kaggle-train.csv"  # which datafile to peek

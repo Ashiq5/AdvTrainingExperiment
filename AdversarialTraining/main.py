@@ -63,12 +63,12 @@ attack_classes = ["TextFoolerJin2019", "BAEGarg2019", "TextBuggerLi2018"]
 def get_args():
     # create args
     # You just need to change the parameters here
-    at = True  # Todo: change here
+    at = False  # Todo: change here
     if not at:  # for normal training
-        return Args(dataset="imdb", model_short_name="lstm",
+        return Args(dataset="imdb", model_short_name="cnn",
                     batch_size=32, epochs=75,
                     adversarial_training=False,
-                    orig_model_prefix="lstm-imdb",
+                    orig_model_prefix="cnn-imdb",
                     max_length=2500,
 
                     # for evaluate
@@ -77,7 +77,7 @@ def get_args():
 
                     # for pre-generate
                     attack_class_for_training=attack_classes[1],  # specify which attack to generate adv samples on the trained model
-                    adv_sample_file="lstm-kaggle-bae.csv",  # file name of where to save adv. samples
+                    adv_sample_file="cnn-imdb-bae.csv",  # file name of where to save adv. samples
                     adversarial_samples_to_train=2000,  # how many samples in adv_sample_file
                     )
     else:  # for adversarial training

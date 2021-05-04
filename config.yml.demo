@@ -1,6 +1,6 @@
 # config.yml
 Path:
-  kaggle-toxic-comment-directory: "dataset/"
+  kaggle-toxic-comment-directory: "../dataset/"
   kaggle-toxic-comment:
     train: "dataset/kaggle-train-short.csv"
     test: "dataset/kaggle-test-short.csv"
