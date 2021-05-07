@@ -11,7 +11,7 @@ To run this project, you need to do the following things:
    
        i. if you want to train your model normally, set **at** to False, specify the normal training parameters in Args constructor
    
-       ii. if you want to train your model normally, set **at** to True, specify the adversarial training parameters in Args constructor
+       ii. if you want to train your model adversarially, set **at** to True, specify the adversarial training parameters in Args constructor
    
    b. For generating adversarial samples, set the **task** variable to "pre-generate", set **at** to False, specify the parameters for pre-generate in Args constructor, specify the model path that you want to attack
    
